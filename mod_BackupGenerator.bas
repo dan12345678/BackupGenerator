@@ -21,28 +21,25 @@ Option Explicit
 '
 '''
 Public Function auto_backup(ByVal fromPath As String, toPath As String) As Boolean
-    ' catch errors
-    On Error GoTo err_handler
+On Error GoTo err_handler
     
     Dim FSO As Object
     
-    ' ensure we don't have double slashes
-    fromPath = Replace(fromPath, "\\", "\")
-    toPath = Replace(toPath, "\\", "\")
-    
     auto_backup = False
+    
+    ' ensure we don't have double slashes (except at the beginning of the path to indicate server names)
+    fromPath = Replace(fromPath, "\", "\")
+    toPath = Replace(toPath, "\", "\")
+    If Left(fromPath, 1) = "\" Then fromPath = "\" & fromPath
+    If Left(toPath, 1) = "\" Then toPath = "\" & toPath
+    
     
     ' This copies a file from FromPath to ToPath.
     ' Note: If ToPath already exists it will overwrite existing file
     ' if ToPath does not exist it will be created
        
-    If Right(fromPath, 1) = "\" Then
-        fromPath = Left(fromPath, Len(fromPath) - 1)
-    End If
-
-    If Right(toPath, 1) = "\" Then
-        toPath = Left(toPath, Len(toPath) - 1)
-    End If
+    If Right(fromPath, 1) = "\" Then fromPath = Left(fromPath, Len(fromPath) - 1)
+    If Right(toPath, 1) = "\" Then toPath = Left(toPath, Len(toPath) - 1)
 
     Set FSO = CreateObject("scripting.filesystemobject")
 
@@ -53,9 +50,7 @@ Public Function auto_backup(ByVal fromPath As String, toPath As String) As Boole
     End If
 
     ' create folder housing toPath if it doesn't already exist
-    If Not FSO.folderexists(dirname(toPath, "\") & "\") Then
-        MkDir (dirname(toPath, "\"))
-    End If
+    If Not FSO.folderexists(dirname(toPath, "\") & "\") Then MkDir (dirname(toPath, "\"))
     
     ' if able to copy and paste the file, return True
     FSO.CopyFile Source:=fromPath, Destination:=toPath
