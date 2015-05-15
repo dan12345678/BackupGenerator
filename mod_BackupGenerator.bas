@@ -28,8 +28,8 @@ On Error GoTo err_handler
     auto_backup = False
     
     ' ensure we don't have double slashes (except at the beginning of the path to indicate server names)
-    fromPath = Replace(fromPath, "\", "\")
-    toPath = Replace(toPath, "\", "\")
+    fromPath = Replace(fromPath, "\\", "\")
+    toPath = Replace(toPath, "\\", "\")
     If Left(fromPath, 1) = "\" Then fromPath = "\" & fromPath
     If Left(toPath, 1) = "\" Then toPath = "\" & toPath
     
